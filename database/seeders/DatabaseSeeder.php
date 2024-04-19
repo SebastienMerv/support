@@ -15,5 +15,15 @@ class DatabaseSeeder extends Seeder
     {
         // Run the groupSeeder
         $this->call(GroupSeeder::class);
+        $this->call(Priorities::class);
+        $this->call(Categories::class);
+
+        // Create a user
+        User::factory()->create([
+            'name' => 'John Doe',
+            'email' => 'sebastienmerveilleriviere@gmail.com',
+            'group_id' => 1, // 'admin
+            'password' => bcrypt('password'),
+        ]);
     }
 }

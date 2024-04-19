@@ -33,51 +33,27 @@
     <div class="ml-24 mr-24 bg-white p-8 mt-2">
         <table class="table-auto w-full">
             <thead>
-                <th>Status</th> <!-- Changement d'ordre ici -->
-                <th>Demandeur</th>
+                <th>Prioritée</th> <!-- Changement d'ordre ici -->
                 <th>Titre</th>
+                <th>Demandeur</th>
             </thead>
 
             <tbody class="h-full">
-                <tr class="bg-slate-200 rounded-sm">
+                @foreach($tickets as $ticket)
+                <tr class="{{ !$loop->even ? 'bg-slate-200' : 'bg-white' }} rounded-sm">
                     <td class="p-2"> <!-- Ajoutez le padding ici -->
                         <div class="flex items-center justify-center">
-                            <span class="bg-green-300 p-2 rounded-full h-8 w-8 block"></span> <!-- Ajout de la classe 'block' pour centrer verticalement -->
+                            <span class="bg-{{ $ticket->priority->color}}-300 p-2 rounded-full h-8 w-8 block"></span> <!-- Ajout de la classe 'block' pour centrer verticalement -->
                         </div>
                     </td>
                     <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
-                        Problème avec mon imprimante
+                        <a href="#">{{ $ticket->title }}</a>
                     </td>
                     <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
-                        Sébastien MERVEILLE
+                        {{ $ticket->user->name }}
                     </td>
                 </tr>
-                <tr class="bg-white-200 rounded-sm">
-                    <td class="p-4 mb-2 mt-2"> <!-- Ajoutez le padding ici -->
-                        <div class="flex items-center justify-center">
-                            <span class="bg-green-300 p-2 rounded-full h-8 w-8 block"></span> <!-- Ajout de la classe 'block' pour centrer verticalement -->
-                        </div>
-                    </td>
-                    <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
-                        Problème avec mon imprimante
-                    </td>
-                    <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
-                        Sébastien MERVEILLE
-                    </td>
-                </tr>
-                <tr class="bg-slate-200 rounded-sm">
-                    <td class="p-2"> <!-- Ajoutez le padding ici -->
-                        <div class="flex items-center justify-center">
-                            <span class="bg-green-300 p-2 rounded-full h-8 w-8 block"></span> <!-- Ajout de la classe 'block' pour centrer verticalement -->
-                        </div>
-                    </td>
-                    <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
-                        Problème avec mon imprimante
-                    </td>
-                    <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
-                        Sébastien MERVEILLE
-                    </td>
-                </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

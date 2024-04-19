@@ -11,13 +11,13 @@
     <nav class="pl-2 text-white bg-slate-800 w-80 h-screen flex pt-12 flex-col">
         <p class="text-yellow-400 text-3xl"><i class="fa-solid fa-headset"></i> Assistance</p>
         <ul class="ml-8 text-xl">
-            <li><a href="#"><i class="fa-solid fa-gauge"></i> Tableau de bord</a></li>
-            <li><a href="#"><i class="fa-solid fa-info"></i> Tickets</a></li>
+            <li><a href="{{ route('dashboard')}}"><i class="fa-solid fa-gauge"></i> Tableau de bord</a></li>
+            <li><a href="{{ route('tickets.index')}}"><i class="fa-solid fa-info"></i> Tickets</a></li>
         </ul>
 
         <p class="text-yellow-400 text-3xl"><i class="fa-solid fa-user-tie"></i> Administration</p>
         <ul class="ml-8 text-xl">
-            <li><a href="#"><i class="fa-solid fa-user"></i> Utilisateurs</a></li>
+            <li><a href="{{ route('users.index')}}"><i class="fa-solid fa-user"></i> Utilisateurs</a></li>
         </ul>
     </nav>
     
