@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Priority;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -60,6 +61,47 @@ class TicketController extends Controller
 
     public function show($id)
     {
-        return view('tiquets.show', ['id' => $id]);
+        $tiquet = Ticket::findOrFail($id);
+        $cateogries = Category::all();
+        $priorities = Priority::all();
+
+        return view(
+            'tiquets.show',
+            [
+                'ticket' => $tiquet,
+                'categories' => $cateogries,
+                'priorities' => $priorities,
+                'users' => User::all(),
+            ]
+        );
+    }
+
+    public function update(Request $request, $id) {
+        $validated = $request->validate([
+            'description' => 'required',
+            'urgency' => 'required|exists:priorities,id',
+            'category' => 'required|exists:categories,id',
+            'assignation' => 'array|nullable',
+            'observer' => 'array|nullable',
+            'requester' => 'array|nullable',
+        ]);
+
+        $ticket = Ticket::findOrFail($id);
+        $ticket->priority_id = $validated['urgency'];
+        $ticket->category_id = $validated['category'];
+        $ticket->save();
+
+        if (isset($validated['description'])) {
+            $ticket->comments()->create([
+                'comment' => $validated['description'],
+                'user_id' => auth()->id(),
+            ]);
+        }
+
+        if (isset($validated['assignation'])) {
+            $ticket->technicians()->sync($validated['assignation']);
+        }
+
+        return redirect()->route('tickets.index')->with('success', 'Ticket updated successfully');
     }
 }

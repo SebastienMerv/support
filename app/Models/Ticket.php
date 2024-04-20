@@ -30,4 +30,17 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function technicians()
+    {
+        // Tous les utilisateurs qui sont techniciens sur ce ticket et qui ont le rôle id 1 ou 2
+        $users = $this->belongsToMany(User::class, 'tickets_technicians');
+
+        // On retire tous les utilisateurs qui n'ont pas un id de rôle 1 ou 2
+        $users = $users->whereHas('group', function ($query) {
+            $query->whereIn('group_id', [1, 2]);
+        });
+
+        return $users;
+    }
 }

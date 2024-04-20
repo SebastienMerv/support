@@ -13,6 +13,8 @@ class GroupSeeder extends Seeder
      */
     public function run(): void
     {
-        Group::create(['name' => 'Admininistrateurs']);
+        Group::create(['name' => 'Admininistrateurs', 'id'=>1]);
+        Group::create(['name' => 'Techniciens', 'id'=>2]);
+        Group::create(['name' => 'Utilisateurs', 'id'=>3]);
     }
 }

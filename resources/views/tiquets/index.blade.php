@@ -47,7 +47,7 @@
                         </div>
                     </td>
                     <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
-                        <a href="#">{{ $ticket->title }}</a>
+                        <a href="{{ route('tickets.show', $ticket->id )}}">{{ $ticket->title }}</a>
                     </td>
                     <td class="p-4 text-center"> <!-- Ajoutez le padding ici -->
                         {{ $ticket->user->name }}

@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Group::class);
     }
+
+    public function isTechnician()
+    {
+        return $this->group->id === 1 || $this->group->id === 2;
+    }
 }
