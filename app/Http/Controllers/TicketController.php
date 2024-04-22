@@ -76,20 +76,36 @@ class TicketController extends Controller
         );
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
+        if ($request->close) {
+            $ticket = Ticket::findOrFail($id);
+            $ticket->status = 'closed';
+            $ticket->save();
+
+            return redirect()->route('tickets.index')->with('success', 'Ticket closed successfully');
+        }
+
         $validated = $request->validate([
             'description' => 'required',
             'urgency' => 'required|exists:priorities,id',
             'category' => 'required|exists:categories,id',
-            'assignation' => 'array|nullable',
-            'observer' => 'array|nullable',
-            'requester' => 'array|nullable',
         ]);
-
         $ticket = Ticket::findOrFail($id);
-        $ticket->priority_id = $validated['urgency'];
         $ticket->category_id = $validated['category'];
+        $ticket->priority_id = $validated['urgency'];
         $ticket->save();
+
+        $user = auth()->user();
+        if ($user->group == 'Administrateur') {
+            if (isset($request->assignation)) {
+                $ticket->technicians()->sync($request->assignation);
+            }
+
+            if (isset($validated['observer'])) {
+                $ticket->observers()->sync($request->observer);
+            }
+        }
 
         if (isset($validated['description'])) {
             $ticket->comments()->create([
@@ -98,9 +114,7 @@ class TicketController extends Controller
             ]);
         }
 
-        if (isset($validated['assignation'])) {
-            $ticket->technicians()->sync($validated['assignation']);
-        }
+
 
         return redirect()->route('tickets.index')->with('success', 'Ticket updated successfully');
     }

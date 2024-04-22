@@ -11,14 +11,22 @@
     <nav class="pl-2 text-white bg-slate-800 w-80 h-screen flex pt-12 flex-col">
         <p class="text-yellow-400 text-3xl"><i class="fa-solid fa-headset"></i> Assistance</p>
         <ul class="ml-8 text-xl">
+            @if(auth()->user()->isTechnician())
             <li><a href="{{ route('dashboard')}}"><i class="fa-solid fa-gauge"></i> Tableau de bord</a></li>
             <li><a href="{{ route('tickets.index')}}"><i class="fa-solid fa-info"></i> Tickets</a></li>
+            @else
+            <li><a href="{{ route('tickets.create')}}"><i class="fa-solid fa-info"></i> Nouveau ticket</a></li>
+            @endif
         </ul>
 
+        @if(auth()->user()->isAdmin())
         <p class="text-yellow-400 text-3xl"><i class="fa-solid fa-user-tie"></i> Administration</p>
         <ul class="ml-8 text-xl">
             <li><a href="{{ route('users.index')}}"><i class="fa-solid fa-user"></i> Utilisateurs</a></li>
+            <li><a href="#"><i class="fa-solid fa-warn"></i> Gestion des catégories</a></li>
+            <li><a href="#"><i class="fa-solid fa-user"></i> Gestion des niveaux d'urgence</a></li>
         </ul>
+        @endif
     </nav>
     
     <main class="flex flex-col w-full">

@@ -48,8 +48,8 @@
                 <div>
 
                     <button class="bg-yellow-400 w-24 p-2 mt-2 rounded-sm">Sauvegarder</button>
-                    @if (auth()->user()->group->name == 'Administrateur')
-                        <button class="bg-red-400 w-24 p-2 mt-2 rounded-sm">Fermer</button>
+                    @if (auth()->user()->group->name != 'Utilisateurs')
+                        <button name="close" value="true" class="bg-red-400 w-24 p-2 mt-2 rounded-sm">Fermer</button>
                     @endif
                 </div>
             </div>
@@ -71,7 +71,7 @@
                 </select>
 
                 <label for="assignation">Assignation :</label>
-                <select name="assignation[]" multiple class="p-2 border border-black rounded-sm w-full mt-2">
+                <select @if(auth()->user()->group->name != 'Admininistrateurs') disabled @endif name="assignation[]" multiple class="p-2 border border-black rounded-sm w-full mt-2">
                     @foreach ($users as $user)
                         @if ($user->isTechnician())
                             @if ($ticket->technicians->contains($user))
@@ -85,8 +85,16 @@
 
                 <!--- Observateur et demandeur ---->
                 <label for="observer">Observateur :</label>
-                <select name="observer[]" multiple class="p-2 border border-black rounded-sm w-full mt-2">
-                    <option selected>Personne 1</option>
+                <select @if(auth()->user()->group->name != 'Admininistrateurs') disabled @endif name="observer[]" multiple class="p-2 border border-black rounded-sm w-full mt-2">
+                    @foreach ($users as $user)
+                        @if ($user->isTechnician())
+                            @if ($ticket->technicians->contains($user))
+                                <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
+                                @else
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endif
+                        @endif
+                    @endforeach
                 </select>
 
                 <label for="requester">Demandeur :</label>

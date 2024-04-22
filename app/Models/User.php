@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->group->id === 1 || $this->group->id === 2;
     }
+
+    public function isAdmin()
+    {
+        return $this->group->id === 1;
+    }
 }

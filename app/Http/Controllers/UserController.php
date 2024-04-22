@@ -7,7 +7,9 @@ use App\Mail\ActivateAccount as MailActivateAccount;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 
 class UserController extends Controller
 {
@@ -62,11 +64,45 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Utilisateur créé avec succès !');
     }
 
-    public function token($token) {
-        return view('users.token', compact('token'));
+    public function forgotPassword() {
+        return view('auth.forgot-password');
     }
 
-    public function processToken($token) {
-        // TODO : Verify the two password are the same and verify token.
+    public function sendForgotPassword(Request $request) {
+        $user = User::where('email', $request->email)->first();
+
+        if($user) {
+            App::setLocale('fr');
+            Password::sendResetLink(['email' => $user->email]);
+        }
+
+        return redirect()->route('forgot-password')->with('success', 'Un email vous a été envoyé pour réinitialiser votre mot de passe !');
+    }
+
+    public function resetPassword($token) {
+        return view('auth.reset-password', ['token' => $token]);
+    }
+
+    public function token($token) {
+        return view('auth.token', ['token' => $token]);
+    }
+
+    public function proccessToken(Request $request, $token) {
+        // Validate the request
+        $request->validate([
+            'password' => 'required|min:8',
+        ]);
+
+        // Find the user with the token
+        $user = User::where('remember_token', $token)->first();
+        if($user) {
+            $user->password = bcrypt($request->password);
+            $user->remember_token = null;
+            $user->save();
+
+            return redirect()->route('login')->with('success', 'Votre mot de passe a été réinitialisé avec succès !');
+        }
+
+        return redirect()->route('token', ['token' => $token])->with('error', 'Le token est invalide !');
     }
 }
