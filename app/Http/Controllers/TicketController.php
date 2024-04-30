@@ -17,7 +17,14 @@ class TicketController extends Controller
 
     public function index()
     {
-        $tickets = Ticket::all();
+        // Tickets where TicketTechnician contains the authenticated user
+        if (auth()->user()->group->name == 'Administrateurs') {
+            $tickets = Ticket::all();
+        } else {
+            $tickets = Ticket::whereHas('technicians', function ($query) {
+                $query->where('user_id', auth()->id());
+            })->get();
+        }
 
         return view('tiquets.index', [
             'tickets' => $tickets,
@@ -87,7 +94,6 @@ class TicketController extends Controller
         }
 
         $validated = $request->validate([
-            'description' => 'required',
             'urgency' => 'required|exists:priorities,id',
             'category' => 'required|exists:categories,id',
         ]);
@@ -95,18 +101,18 @@ class TicketController extends Controller
         $ticket->category_id = $validated['category'];
         $ticket->priority_id = $validated['urgency'];
         $ticket->save();
-
-        $user = auth()->user();
-        if ($user->group == 'Administrateur') {
+        
+        $user = User::find(auth()->id());
+        if ($user->group->name == 'Admininistrateurs') {
             if (isset($request->assignation)) {
                 $ticket->technicians()->sync($request->assignation);
             }
-
+            
             if (isset($validated['observer'])) {
                 $ticket->observers()->sync($request->observer);
             }
         }
-
+        
         if (isset($validated['description'])) {
             $ticket->comments()->create([
                 'comment' => $validated['description'],
