@@ -23,8 +23,8 @@
         <p class="text-yellow-400 text-3xl"><i class="fa-solid fa-user-tie"></i> Administration</p>
         <ul class="ml-8 text-xl">
             <li><a href="{{ route('users.index')}}"><i class="fa-solid fa-user"></i> Utilisateurs</a></li>
-            <li><a href="#"><i class="fa-solid fa-list"></i> Gestion des catégories</a></li>
-            <li><a href="#"><i class="fa-solid fa-fire-flame-simple"></i>Gestion des niveaux d'urgence</a></li>
+            <li><a href="{{ route('categories.index')}}"><i class="fa-solid fa-list"></i> Gestion des catégories</a></li>
+            <li><a href="{{ route('settings.index')}}"><i class="fa-solid fa-gear mr-2"></i>Paramètres</a></li>
         </ul>
         @endif
     </nav>

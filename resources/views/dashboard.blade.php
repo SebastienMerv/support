@@ -9,13 +9,13 @@
         <div class="grid grid-cols-2">
     <div class="bg-blue-100 w-96 p-8">
         <h1 class="text-3xl text-blue-500">
-            0
+            {{ $open_tickets }}
         </h1>
         <p class="text-2xl text-blue-500">Tickets ouverts</p>
     </div>
     <div class="bg-red-100 w-96 p-8">
         <h1 class="text-3xl text-red-500">
-            0
+            {{ $closed_tickets }}
         </h1>
         <p class="text-2xl text-red-500">Tickets en attente</p>
     </div>

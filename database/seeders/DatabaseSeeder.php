@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GroupSeeder::class);
         $this->call(Priorities::class);
         $this->call(Categories::class);
+        $this->call(SettingsSeeder::class);
 
         // Create a user
         User::factory()->create([

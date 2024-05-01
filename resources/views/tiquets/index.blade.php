@@ -4,7 +4,8 @@
 
 @section('content')
 
-<div class="mt-8 bg-white ml-24 mr-24 p-2">
+{{-- TODO : Filter on attribued --}}
+{{-- <div class="mt-8 bg-white ml-24 mr-24 p-2">
     <select name="" id="" class="border p-2 rounded-sm">
         <option value="">Me sont attribués</option>
         <option value="">Tous</option>
@@ -17,20 +18,27 @@
     </select>
 
     <button class="p-2 bg-yellow-400 rounded-sm"><i class="fa-solid fa-magnifying-glass"></i> Rechercher</button>
-</div>
+</div> --}}
 
-<div class="mt-2 bg-white ml-24 mr-24 p-2">
-    <select name="" id="" class="border p-2 rounded-sm">
-        <option value="">Contient</option>
-        <option value="">Ne contient pas</option>
+<form class="mt-2 bg-white ml-24 mr-24 p-2">
+    <select name="contains" id="" class="border p-2 rounded-sm">
+        <option value="yes" @if(request()->contains == 'yes') selected @endif>Contient</option>
+        <option value="no" @if(request()->contains == 'no') selected @endif>Ne contient pas</option> 
     </select>
-    <input type="text" class="border p-2 rounded-sm">
+    <input type="text" name="search" class="border p-2 rounded-sm" @if(request()->search) value="{{ request()->search }}" @endif>
 
     <button class="p-2 bg-yellow-400 rounded-sm"><i class="fa-solid fa-magnifying-glass"></i> Rechercher</button>
-</div>
+</form>
 
 <div class="container">
     <div class="ml-24 mr-24 bg-white p-8 mt-2">
+    
+        @if(session('error'))
+            <div class="bg-red-500 text-white p-2 rounded-sm mb-2">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <table class="table-auto w-full">
             <thead>
                 <th>Prioritée</th> <!-- Changement d'ordre ici -->
@@ -56,6 +64,7 @@
                 @endforeach
             </tbody>
         </table>
+
     </div>
 </div>
 

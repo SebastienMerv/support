@@ -19,6 +19,20 @@ Route::group(['prefix' => 'tickets', 'middleware' => 'auth'], function() {
     Route::delete('/{id}', 'App\Http\Controllers\TicketController@destroy');
 });
 
+Route::group(['prefix' => 'categories', 'middleware' => 'auth'], function() {
+    Route::get('/', 'App\Http\Controllers\CategoryController@index')->name('categories.index');
+    Route::get('/create', 'App\Http\Controllers\CategoryController@create')->name('categories.create');
+    Route::post('/store', 'App\Http\Controllers\CategoryController@store')->name('categories.store');
+    Route::get('/{id}', 'App\Http\Controllers\CategoryController@show')->name('categories.show');
+    Route::get('/{id}/edit', 'App\Http\Controllers\CategoryController@edit')->name('categories.edit');
+    Route::put('/{id}', 'App\Http\Controllers\CategoryController@update')->name('categories.update');
+    Route::delete('/{id}', 'App\Http\Controllers\CategoryController@destroy')->name('categories.destroy');
+});
+
+Route::group(['prefix' => 'settings', 'middleware' => 'auth'], function() {
+    Route::get('/', 'App\Http\Controllers\SettingController@index')->name('settings.index');
+    Route::put('/', 'App\Http\Controllers\SettingController@update')->name('settings.update');
+});
 
 Route::group(['prefix' => 'users', 'middleware' => 'auth'], function() {
     Route::get('/', 'App\Http\Controllers\UserController@index')->name('users.index');
