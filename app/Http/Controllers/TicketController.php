@@ -15,6 +15,9 @@ class TicketController extends Controller
 {
     public function dashboard()
     {
+        if (auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         $closed_tickets = Ticket::where('status', 'closed')->count();
         $open_tickets = Ticket::where('status', 'open')->count();
         return view('dashboard', [
@@ -36,11 +39,19 @@ class TicketController extends Controller
             if (auth()->user()->group->name == 'Admininistrateurs') {
                 $tickets = Ticket::all();
             } else {
+                if (auth()->user()->group->name == 'Technicien') {
                 $tickets = Ticket::whereHas('technicians', function ($query) {
                     $query->where('user_id', auth()->id());
                 })->get();
+            } else {
+                $tickets = Ticket::all();
+            }
             }
         }
+        // If the user is not an admin, is not technician on this ticket or is not the author of the ticket
+        $tickets = $tickets->filter(function ($ticket) {
+            return auth()->user()->group->name == 'Admininistrateurs' || $ticket->technicians->contains(auth()->id()) || $ticket->user_id == auth()->id();
+        });
 
         // Order the ticket by the last comment and urgency
         $tickets = $tickets->sortByDesc(function ($ticket) {
@@ -52,10 +63,6 @@ class TicketController extends Controller
             return $ticket->status != 'closed';
         });
 
-        // If the user is not an admin, is not technician on this ticket or is not the author of the ticket
-        $tickets = $tickets->filter(function ($ticket) {
-            return auth()->user()->group->name == 'Admininistrateurs' || $ticket->technicians->contains(auth()->id()) || $ticket->user_id == auth()->id();
-        });
 
         return view('tiquets.index', [
             'tickets' => $tickets,
@@ -91,7 +98,7 @@ class TicketController extends Controller
 
         $ticket->comments()->create([
             'comment' => $validated['description'],
-            'user_id' => 1,
+            'user_id' => auth()->id(),
         ]);
 
         Mail::to(auth()->user()->email)->queue(new CreateConfirm($ticket));
@@ -124,6 +131,11 @@ class TicketController extends Controller
 
     public function update(Request $request, $id)
     {
+        $tiquet = Ticket::findOrFail($id);
+        // If the user is not an admin, is not technician on this ticket or is not the author of the ticket
+        if (auth()->user()->group->name != 'Admininistrateurs' && !$tiquet->technicians->contains(auth()->id()) && $tiquet->user_id != auth()->id()) {
+            return redirect()->route('tickets.index')->with('error', 'You are not allowed to see this ticket');
+        }
         if ($request->close) {
             $ticket = Ticket::findOrFail($id);
             Mail::to($ticket->user->email)->queue(new NewActuTicket($ticket));
@@ -153,9 +165,9 @@ class TicketController extends Controller
             }
         }
 
-        if (isset($validated['description'])) {
+        if (isset($request['description'])) {
             $ticket->comments()->create([
-                'comment' => $validated['description'],
+                'comment' => $request['description'],
                 'user_id' => auth()->id(),
             ]);
         }

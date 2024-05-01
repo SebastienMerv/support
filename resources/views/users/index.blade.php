@@ -18,11 +18,13 @@
             </tr>
         </thead>
         <tbody>
+            @foreach($users as $user)
             <tr>
-                <td class="text-center">Sébastien</td>
-                <td class="text-center">sebastien.merveille@ac.andenne.be</td>
-                <td class="text-center">Administrateur</td>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                <td>{{ $user->group->name }}</td>
             </tr>
+            @endforeach 
         </tbody>
     </table>
 </div>

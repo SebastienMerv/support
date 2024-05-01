@@ -15,11 +15,18 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('users.index');
+        if(auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
+        $users = User::all();
+        return view('users.index', ['users' => $users]);
     }
 
     public function create()
     {
+        if(auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         $groups = Group::all();
 
         return view(
@@ -32,6 +39,9 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        if(auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',

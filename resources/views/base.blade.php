@@ -15,6 +15,7 @@
             <li><a href="{{ route('dashboard')}}"><i class="fa-solid fa-gauge"></i> Tableau de bord</a></li>
             <li><a href="{{ route('tickets.index')}}"><i class="fa-solid fa-info"></i> Tickets</a></li>
             @else
+            <li><a href="{{ route('tickets.index')}}"><i class="fa-solid fa-info"></i> Tickets</a></li>
             <li><a href="{{ route('tickets.create')}}"><i class="fa-solid fa-info"></i> Nouveau ticket</a></li>
             @endif
         </ul>
@@ -30,9 +31,13 @@
     </nav>
     
     <main class="flex flex-col w-full">
-    <nav class="w-full h-12 flex flex-row items-center bg-white border pl-8">
+    <nav class="w-full h-12 flex flex-row items-center bg-white border pl-8 justify-between">
         <ul>
             <li class="border p-2 rounded-sm"><i class="fa-solid fa-house"></i> Accueil</li>
+        </ul>
+
+        <ul class="mr-8">
+            <li><a href="/logout">Déconnexion</a></li>
         </ul>
     </nav>
 

@@ -22,12 +22,12 @@
                 </div>
                 @endif
                 @foreach ($ticket->comments as $comment)
-                    @if ($comment->user_id == auth()->id())
+                    @if ($comment->user_id != auth()->id())
                         <div class="flex justify-end items-end flex-col bg-slate-200 p-8 rounded-lg mb-8">
                             <h1 class="text-end text-xl">{{ $comment->user->name }}</h1>
                             <p class="text-start">{{ $comment->comment }}</p>
                         </div>
-                    @elseif($comment->user_id != auth()->id())
+                    @elseif($comment->user_id == auth()->id())
                         <div class="flex justify-center items-start flex-col bg-indigo-200 p-8 rounded-lg mb-8">
                             <h1 class="text-start text-xl">VOUS</h1>
                             <p class="text-end">{{ $comment->comment }}</p>

@@ -17,7 +17,7 @@
         <h1 class="text-3xl text-red-500">
             {{ $closed_tickets }}
         </h1>
-        <p class="text-2xl text-red-500">Tickets en attente</p>
+        <p class="text-2xl text-red-500">Tickets fermés</p>
     </div>
     </div>
     </div>

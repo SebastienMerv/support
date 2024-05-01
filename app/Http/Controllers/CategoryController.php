@@ -12,6 +12,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        if (auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         $categories = Category::where('deleted_at', null)->paginate(10); // Add pagination (10 items per page)
         return view('categories.index', compact('categories'));
     }
@@ -21,6 +24,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         return view('categories.create');
     }
 
@@ -29,6 +35,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if (auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         $validator = $request->validate([
             'name' => 'required|string|max:25',
         ]);
@@ -44,6 +53,9 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
+        if(auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         $category = Category::findOrFail($id);
         return view('categories.show', compact('category'));
     }
@@ -53,7 +65,10 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = Category::findOrFail($id);    
+        if(auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
+        $category = Category::findOrFail($id);
         return view('categories.edit', compact('category'));
     }
 
@@ -62,6 +77,9 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if(auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
         $validator = $request->validate([
             'name' => 'required|string|max:25',
         ]);
@@ -76,14 +94,17 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        if(!request()->confirm) {
-        $categories = Category::all();
-        $category = Category::findOrFail($id);
-        return view('categories.delete', compact('categories', 'category'));
+        if(auth()->user()->group->name != 'Administrateurs') {
+            return redirect()->route('tickets.create')->with('error', 'Vous n\'avez pas les droits pour accéder à cette page.');
+        }
+        if (!request()->confirm) {
+            $categories = Category::all();
+            $category = Category::findOrFail($id);
+            return view('categories.delete', compact('categories', 'category'));
         } else {
-            if(Category::count() == 1) {
+            if (Category::count() == 1) {
                 return redirect()->route('categories.index')->with('error', 'Il ne reste qu\'une seule catégorie, vous ne pouvez pas la supprimer.');
-            } else if(request()->confirm == $id) {
+            } else if (request()->confirm == $id) {
                 return redirect()->back()->with('error', 'Merci de choisir une autre catégorie afin de transférer les tickets attribués à celle à supprimer.');
             }
             $category = Category::findOrFail($id);
@@ -91,7 +112,7 @@ class CategoryController extends Controller
 
             // Take all tickets from the category to delete and assign them to the category selected by the user
             $tickets = $category->tickets;
-            foreach($tickets as $ticket) {
+            foreach ($tickets as $ticket) {
                 $ticket->category_id = request()->confirm;
                 $ticket->save();
             }
